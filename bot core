@@ -1,0 +1,156 @@
+import random
+import discord
+from discord.ext import commands, tasks
+from itertools import cycle
+
+client = commands.Bot(command_prefix='.')
+status = cycle(['Salve rapaziada!','.ajuda para comandos','Clã Boinas - O maior do Brasil!','Um BOT feito com <3 por Its'])
+
+@client.event
+async def on_ready():
+    change_status.start()
+    print('Acordei!')
+
+@tasks.loop(seconds=20)
+async def change_status():
+    await client.change_presence(activity=discord.Game(next(status)))
+@client.event
+async def on_member_join(member):
+    print('{} has joined a server.'.format(member))
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send('https://giphy.com/gifs/animated-robot-GKZt8xvGWG2DS\n:x: `Ainda não aprendi este comando!`\nConfira o que posso fazer com o **_.ajuda_** !')
+
+@client.event
+async def on_member_removed(member):
+    print('{} has left a server.'.format(member))
+
+#-------------COMANDOS----------------------------------------------------
+
+@client.command()
+async def amor(ctx):
+    await ctx.send('Ei {}, eu te amo! :hearts:'.format(ctx.message.author.display_name))
+
+#-------------------------amor-----------------------------------
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx, amount=5):
+    await ctx.channel.purge(limit=1)
+    await ctx.channel.purge(limit=amount)
+    await ctx.send('**{}** mensagem(ens) foram apagadas!'.format(amount))
+
+@clear.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send('Ei, {}! Você não tem permissão de **gerenciar mensagens.** Peça ao **administrador do server!**'.format(ctx.message.author.display_name))
+#-------------------------clear-----------------------------------
+@client.command()
+async def ping(ctx):
+    await ctx.send('Ei, {}, você está com {} ms.'.format(ctx.message.author.display_name,int(client.latency * 1000)))
+#-------------------------ping-----------------------------------
+@client.command()
+async def ajuda(ctx):
+    await ctx.send('**Enviando abaixo a lista de comandos:**'
+                   '\n_.ajuda_   Mostra essa mensagem'                   
+                   '\n_.boinas_'
+                   '\n_.amor_'
+                   '\n_.clear_   (valor)'
+                   '\n_.deus_'                   
+                   '\n_.herobrine_'
+                   '\n._mito_'
+                   '\n._nocturnal_'
+                   '\n._ping_'
+                   '\n._8ball_'
+                   '\n._politica_'
+                   '\n._xd_')
+#-------------------------ajuda-----------------------------------
+@client.command()
+async def deus(ctx):
+    if ctx.author.id != ID OCULTO:
+        await ctx.send('Ei, {}! Você não é meu pai. :rage: '.format(ctx.message.author.display_name))
+    else:
+        await ctx.send('Olá, mestre {}! :two_hearts:'.format(ctx.message.author.display_name))
+#-------------------------deus-----------------------------------
+@client.command()
+async def nocturnal(ctx):
+    await ctx.send('Quem me chama!? Confira o que eu posso fazer com o **_.ajuda_**!')
+#-------------------------nocturnal-----------------------------------
+@client.command()
+async def boinas(ctx):
+    await ctx.send(':skull: **O MAIOR CLAN DE CS DO BR DO BRASIL!** :skull:\nEntre já: https://steamcommunity.com/groups/CLANBOINAS')
+#-------------------------boinas-----------------------------------
+@client.command(aliases=['8ball', 'test'])
+async def _8ball(ctx, *, question):
+    responses = ['Com certeza!',
+                 'Sem chance.',
+                 'Eu diria que sim.',
+                 'Provavelmente.',
+                 'Absolutamente!',
+                 'Nunca!',
+                 'Jamais!',
+                 'Provavelmente não.',
+                 'Óbvio que não.',
+                 'Eu diria que não.',
+                 'Isso é literalmente impossível.',
+                 'Muito provável que sim!',
+                 'Isso nem eu consigo responder.',
+                 'Infelizmente sim.',
+                 'Felizmente sim!',
+                 'Claro que sim.',
+                 'kkkkkk sério? Nunca seria possível.']
+    await  ctx.send('Ei, {}, a sua pergunta **{}** tem a resposta de **{}**\n '.format(ctx.message.author.display_name,question, random.choice(responses)))
+
+@_8ball.error
+async def _8ball_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(':x: Para utilizar o **.8ball** escreva uma **pergunta de sim ou não** e eu te responderei **apenas a verdade!**')
+#-------------------------8ball-----------------------------------
+@client.command()
+async def herobrine(ctx):
+    await ctx.send(':scream: **NÃO OLHE PARA TRÁS! **:scream: '
+                   '\n:smiling_imp: :smiling_imp: :smiling_imp: **O HEROBRINE TE OBSERVA... **:smiling_imp: :smiling_imp: :smiling_imp: '
+                   '\nhttps://giphy.com/gifs/minecraft-OzJ4bGpmSHBwA')
+#-------------------------herobrine-----------------------------------
+@client.command()
+async def politica(ctx):
+    response = ['**Bolsonaro deu um tiro no Haddad.**',
+                 '**Haddad espancou o mito até a morte.**',
+                 '**Bolsonaro explodiu a cara do Haddad com um tiro de bazuca.**',
+                 '**Haddad jogou ácido clorídrico na cara Bolsonaro e ele morreu.**',
+                 '**Bolsonaro mandou um bombardeio na casa do Haddad e ele morreu.**',
+                 '**Haddad meteu uma bala de deagle na cara do mito.**',
+                 '**O mito mandou o exército matar o Haddad.**',
+                 '**O Haddad atropelou o Bolsonaro com uma kombi.**',
+                 '**O Bolsomito atropelou o Haddad com um ônibus.**',
+                 '**Haddad foi atropelado pelo rebanho de touros do Bolsonaro.**',
+                 '**Bolsonaro lançou um míssil nuclear na cara do Haddad.**',
+                 '**O Haddad deu um mortal e deu uma sarrada tão forte na cara do Bolsonaro que ele morreu carbonizado pelo atrito.**',
+                 '**Os dois decidiram comprar um lanche no BK e viraram melhores amigos!**',
+                 '**O Bolsonaro deu um tapa no ouvido do Haddad e ele teve um ataque cardíaco.**',
+                 '**O Haddad socou o nariz do Mito e ele morreu por asfixia.**',
+                 '**O Bolsonaro botou fogo na roupa do Haddad e ele morreu carbonizado.**',
+                 '**Os dois se mataram.**']
+    await  ctx.send('{}\n{}'.format('https://uploads.metropoles.com/wp-content/uploads/2018/10/09215705/haddad-bolsonaro.jpg ',random.choice(response)))
+#-------------------------politica-----------------------------------
+@client.command()
+async def xd(ctx):
+    await ctx.send('https://media1.tenor.com/images/1861ba4600b9cfadd2cdecd696d2eefd/tenor.gif?itemid=8855872')
+#-------------------------xd-----------------------------------
+@client.command()
+async def mito(ctx):
+    await ctx.send('**MITO MITO POW POW**'
+                   '\nhttps://ichef.bbci.co.uk/news/660/cpsprodpb/7DD4/production/_108321223_9011f782-a00c-49b5-8efc-bf960b311278.jpg')
+#-------------------------mito-----------------------------------
+@client.command()
+async def sclear(ctx, amount=5):
+    if ctx.author.id == ID OCULTO:
+        await ctx.channel.purge(limit=1)
+        await ctx.channel.purge(limit=amount)
+        await ctx.send('**[BOT ADMIN]** **{}** mensagem(ens) foram apagadas!'.format(amount))
+    else:
+        await ctx.send(':x: Ei, **{}**, você não é meu **administrador!** :rage:'.format(ctx.message.author.display_name))
+#-------------------------sclear-----------------------------------
+
+client.run('TOKEN OCULTO')
