@@ -1,0 +1,262 @@
+import random
+import discord
+from discord.ext import commands, tasks
+from itertools import cycle
+
+client = commands.Bot(command_prefix='.')
+playing = cycle(['Salve rapaziada! | ver. 1.0.6!','Confira o .ajuda para comandos.','Clã Boinas - O maior do Brasil!','Um BOT feito com <3 por Its'])
+
+@client.event
+async def on_ready():
+    change_activity.start()
+    client.remove_command('help')
+    print('[ONLINE]\nNOCTURNAL BOT VERSAO 1.0.6\nULTIMA ATUALIZACAO 21/10/2019 AS 21:02\nBOT BY ITS')
+
+
+@tasks.loop(seconds=20)
+async def change_activity():
+    await client.change_presence(status=discord.Status.idle, activity=discord.Game(next(playing)))
+
+
+@client.event
+async def on_member_join(member):
+    print('{} has joined a server.'.format(member))
+
+
+@client.event
+async def on_member_removed(member):
+    print('{} has left a server.'.format(member))
+
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send('https://giphy.com/gifs/animated-robot-GKZt8xvGWG2DS\n:x: `Ainda não aprendi este comando!`\nConfira o que posso fazer com o **_.ajuda_** !')
+
+
+#amor
+@client.command()
+async def amor(ctx):
+    await ctx.send('Ei {}, eu te amo! :hearts:'.format(ctx.message.author.display_name))
+
+
+#clear
+@client.command()
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx, amount=5):
+    await ctx.channel.purge(limit=1)
+    await ctx.channel.purge(limit=amount)
+    await ctx.send('**{}** mensagem(ens) foram apagadas!'.format(amount))
+
+@clear.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send(':x: Ei, {}! Você não tem permissão de **gerenciar mensagens.** Peça ao **administrador do server!**'.format(ctx.message.author.display_name))
+
+
+#ping
+@client.command()
+async def ping(ctx):
+    await ctx.send('Ei, {}, você está com {} ms.'.format(ctx.message.author.display_name,int(client.latency * 1000)))
+
+
+#ajuda
+@client.command()
+async def ajuda(ctx):
+    await ctx.send('**Enviando abaixo a lista de comandos:**'
+                   '\n_.ajuda_   Mostra essa mensagem'
+                   '\n_.avatar_'
+                   '\n_.boinas_'
+                   '\n_.amor_'
+                   '\n_.clear_    (valor)'
+                   '\n_.deus_'                   
+                   '\n_.herobrine_'
+                   '\n_.mito_'
+                   '\n_.ping_'
+                   '\n_.ship_'
+                   '\n._8ball_'
+                   '\n._politica_'
+                   '\n._xd_')
+
+
+#deus
+@client.command()
+async def deus(ctx):
+    if ctx.author.id != 261642941653712907:
+        await ctx.send('Ei, {}! Você não é meu pai. :rage: '.format(ctx.message.author.display_name))
+    else:
+        await ctx.send('Olá, mestre {}! :two_hearts:'.format(ctx.message.author.display_name))
+
+
+#boinas
+@client.command()
+async def boinas(ctx):
+    await ctx.send(':skull: **O MAIOR CLAN DE CS DO BR DO BRASIL!** :skull:\nEntre já: https://steamcommunity.com/groups/CLANBOINAS')
+
+
+#8ball
+@client.command(aliases=['8ball', 'test'])
+async def _8ball(ctx, *, question):
+    responses = ['com certeza!',
+                 'isso é literalmente impossível. :thumbsdown: ',
+                 'eu diria que sim. :wink: ',
+                 'se pa provavelmente. :thinking: ',
+                 'kkkkkkk acho que sim man :ok_hand: ',
+                 'nunca! :rage:',
+                 'jamais! :scream: ',
+                 'provavelmente não. :crying_cat_face: ',
+                 'óbvio que não. :no_good:',
+                 'eu diria que não. :raised_hand:',
+                 'cara, acho que não. :persevere: ',
+                 'graças a Deus sim! :raised_hands:',
+                 'isso eu não consigo responder, avançado de mais. :robot: :interrobang:  ',
+                 'infelizmente sim. :pensive: ',
+                 'aham. Vai nessa :joy:',
+                 'carai óbvio mano :rofl: ',
+                 'kkkkkk sério? Nunca seria possível, foi mal. :cry: ']
+    await  ctx.send(':8ball:  Ei, {}, a sua pergunta `{}` tem a resposta de **{}**\n '.format(ctx.message.author.display_name,question, random.choice(responses)))
+
+@_8ball.error
+async def _8ball_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(':x: Para utilizar o **.8ball** escreva uma **pergunta de sim ou não** e eu te responderei **apenas a verdade!**')
+
+
+#herobrine
+@client.command()
+async def herobrine(ctx):
+    await ctx.send(':scream: **NÃO OLHE PARA TRÁS! **:scream: '
+                   '\n:smiling_imp: :smiling_imp: :smiling_imp: **O HEROBRINE TE OBSERVA. **:smiling_imp: :smiling_imp: :smiling_imp: '
+                   '\nhttps://giphy.com/gifs/minecraft-OzJ4bGpmSHBwA')
+
+
+#politica
+@client.command()
+async def politica(ctx):
+    response = ['https://bit.ly/31urDoz\n**Bolsonaro deu um tiro no Haddad.**',
+                 'https://bit.ly/2Mvov7W\n**Haddad e os apoiadores do PT espancaram o Bolsonaro até a morte.**',
+                 'https://bit.ly/31wSAIa\n**Bolsonaro explodiu a cara do Haddad com um tiro de bazuca.**',
+                 'https://bit.ly/2MTybYQ\n**Haddad jogou ácido clorídrico na cara Bolsonaro e ele morreu.**',
+                 'https://bit.ly/35QLUrI\n**Bolsonaro mandou um bombardeio na casa do Haddad e ele morreu.**',
+                 'https://bit.ly/32vJIE3\n**Haddad meteu uma bala de deagle na cara do mito.**',
+                 'https://bit.ly/2VWWA3x\n**O mito mandou o exército matar o Haddad.**',
+                 'https://bit.ly/2o6xdjy\n**O Haddad atropelou o Bolsonaro com uma kombi.**',
+                 'https://bit.ly/2MvPIHy\n**O Bolsomito atropelou o Haddad com um ônibus.**',
+                 'https://bit.ly/2o07itE\n**Haddad deu uma rasteira no Bolsonaro e ele caiu de boca no chão**',
+                 'https://bit.ly/2W2gtX5\n**Bolsonaro lançou um míssil nuclear na casa do Haddad.**',
+                 'https://bit.ly/2VTbacy\n**O Haddad deu um mortal e deu uma sarrada tão forte na cara do Bolsonaro que ele morreu carbonizado pelo atrito.**',
+                 'https://bit.ly/2P32rmM\n**Os dois decidiram comprar um lanche no BK e viraram melhores amigos!**',
+                 'https://bit.ly/32w828Y\n**O Bolsonaro deu um tapa no ouvido do Haddad e ele teve um ataque cardíaco.**',
+                 'https://bit.ly/2MtaQOs\n**O Haddad socou o nariz do Mito e ele morreu por asfixia.**',
+                 'https://bit.ly/2qtmtwo\n**O Bolsonaro botou fogo na roupa do Haddad e ele morreu carbonizado.**',
+                 'https://bit.ly/32xC4sT\n**Os dois se mataram.**']
+    await ctx.send('{}'.format(random.choice(response)))
+
+
+#xd
+@client.command()
+async def xd(ctx):
+    await ctx.send('https://media1.tenor.com/images/1861ba4600b9cfadd2cdecd696d2eefd/tenor.gif?itemid=8855872')
+
+
+#mito
+@client.command()
+async def mito(ctx):
+    await ctx.send('**MITO MITO POW POW**'
+                   '\nhttps://ichef.bbci.co.uk/news/660/cpsprodpb/7DD4/production/_108321223_9011f782-a00c-49b5-8efc-bf960b311278.jpg')
+
+
+#sclear
+@client.command()
+async def sclear(ctx, amount=5):
+    if ctx.author.id == 261642941653712907:
+        await ctx.channel.purge(limit=1)
+        await ctx.channel.purge(limit=amount)
+        await ctx.send('**[BOT ADMIN]** **{}** mensagem(ens) foram apagadas!'.format(amount))
+    else:
+        await ctx.send(':x: Ei, **{}**, você não é meu **administrador!** :rage:'.format(ctx.message.author.display_name))
+
+#stonks
+@client.command()
+async def stonks(ctx):
+    await ctx.send('https://bit.ly/32w6mMH')
+
+@client.command()
+async def avatar(ctx):
+    await ctx.send('{}'.format(ctx.message.author.avatar_url))
+
+@client.command()
+async def ship(ctx, pessoa, otrapessoa):
+
+    gif101 = ['https://gph.is/1sFD3oq']
+    gif100 = ['https://gph.is/g/ZrR1rG1', 'https://gph.is/g/ZP73v8p']
+    gif80 = ['https://gph.is/g/aeYlL9q','http://gph.is/VwVUhp']
+    gif50 = ['https://gph.is/g/ZrR1rql']
+    gif40 = ['https://gph.is/g/EqN87qK']
+    gif20 = ['https://gph.is/g/aNWNvKo']
+
+#random.randint(0, 101)
+
+    porcentagem = random.randint(0, 101)
+    if pessoa == otrapessoa:
+        await ctx.send(':x: Você não pode shippar uma pessoa consigo mesma! :rage:')
+
+    else:
+        await ctx.send('Ei, {}, as chances de **{}** e **{}** darem certo são de **{}%!**'.format(ctx.message.author.display_name, pessoa, otrapessoa, porcentagem))
+
+        if porcentagem ==101:
+            visualvalue = str('[███████████]')
+            await ctx.send(f':scream: :gift_heart: :revolving_hearts: :heartbeat: Este casal atingiu o maior nível de amor possível. :sparkling_heart: :two_hearts: :scream:'
+                           f'\n`{visualvalue}`\n{random.choice(gif101)}')
+
+        elif porcentagem >=90:
+            visualvalue = str('[██████████.]')
+            await ctx.send(f':sparkling_heart:  **Eles são feitos um para o outro!** :heart_eyes:\n`{visualvalue}`\n{random.choice(gif100)}')
+
+        elif porcentagem >=80:
+            visualvalue = str('[█████████..]')
+            await ctx.send(f':heart: **Eles tem tudo para dar certo!** :two_hearts:\n`{visualvalue}`\n{random.choice(gif80)}')
+
+        elif porcentagem >=70:
+            visualvalue = str('[████████...]')
+            await ctx.send(f':heart: **Esse relacionamento pode funcionar bem!** :blush:\n`{visualvalue}`\n{random.choice(gif80)}')
+
+        elif porcentagem >=60:
+            visualvalue = str('[███████....]')
+            await ctx.send(f':hugging: **Mesmo que com seus altos e baixos, pode dar certo.** :smirk:\n`{visualvalue}`\n{random.choice(gif50)}')
+
+        elif porcentagem >=50:
+            visualvalue = str('[██████.....]')
+            await ctx.send(f':thinking: **Pode ser que aconteça. Tenhamos esperança!** :innocent:\n`{visualvalue}`\n{random.choice(gif50)}')
+
+        elif porcentagem >=40:
+            visualvalue = str('[█████......]')
+            await ctx.send(f':thinking: **A esperança é a última quem morre!** :kissing_closed_eyes:\n`{visualvalue}`\n{random.choice(gif40)}')
+
+        elif porcentagem >=30:
+            visualvalue = str('[████.......]')
+            await ctx.send(f':disappointed: **Eu adoraria dizer que sim.** :cry:\n`{visualvalue}`\n{random.choice(gif40)}')
+
+        elif porcentagem >=20:
+            visualvalue = str('[███........]')
+            await ctx.send(f':broken_heart: **Infelizmente isso seria impossível.** :sob:\n`{visualvalue}`\n{random.choice(gif20)}')
+
+        elif porcentagem >=10:
+            visualvalue = str('[██.........]')
+            await ctx.send(f':anger: **Isso jamais funcionaria. Os dois se odeiam!** :rage:\n`{visualvalue}`\n{random.choice(gif20)}')
+
+        elif porcentagem >=0:
+            visualvalue = str('[█..........]')
+            await ctx.send(':sob:  **_Am I a joke to you?_**  :sob:\n`{}`\n{}'.format(visualvalue,'https://bit.ly/2QArgHB'))
+
+        else:
+            await ctx.send(':x: Acho que me confundi com a resposta!\n`o valor da porcentagem não há correspondência.` :robot:')
+
+@ship.error
+async def ship_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(':x: Você deve **específicar dois usuários** com @ após o comando! :wink:'
+                       '\n:point_right: `.ship @usuário1 @usuário2`')
+
+
+client.run('NTg4MTYzNjM4NDY5MDY2NzU0.XaTZ2w.VjCQPpP4NSL6-nkf--f-XQ0yxR4')
